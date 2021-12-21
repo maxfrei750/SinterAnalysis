@@ -1,0 +1,9 @@
+= PaddleTemplate
+
+Template for paddle projects.
+
+
+== Installation (Linux)
+    git clone --recurse-submodules git@github.com:maxfrei750/PaddleTemplate.git
+    cd PaddleTemplate
+    conda env create -f paddle/environment.yaml

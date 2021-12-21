@@ -1,0 +1,3 @@
+[submodule "external/paddle"]
+	path = external/paddle
+	url = https://github.com/maxfrei750/paddle

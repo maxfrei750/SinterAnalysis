@@ -1,0 +1,35 @@
+defaults:
+  - MaskRCNN
+hydra:
+  run:
+    dir: "logs/${hydra:job.config_name}/${now:%Y-%m-%d_%H-%M-%S}"
+logging:
+  wandb:
+    use: true
+    project_name: SinterAnalysis
+data_module:
+  batch_size: 4
+  initial_cropping_rectangle:
+    - 0
+    - 0
+    - 1280
+    - 960
+  user_albumentation_train:
+    transform:
+      __class_fullname__: albumentations.core.composition.Compose
+      additional_targets: { }
+      bbox_params: null
+      keypoint_params: null
+      p: 1.0
+      transforms:
+        - __class_fullname__: albumentations.augmentations.transforms.HorizontalFlip
+          always_apply: false
+          p: 0.5
+        - __class_fullname__: albumentations.augmentations.transforms.VerticalFlip
+          always_apply: false
+          p: 0.5
+callbacks:
+  example_detection_monitor:
+    score_threshold: 0.5
+    do_display_box: false
+    do_display_label: false

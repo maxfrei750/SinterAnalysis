@@ -1,0 +1,4 @@
+defaults:
+  - Base
+data_module:
+  data_root: data/ZnAl2O4

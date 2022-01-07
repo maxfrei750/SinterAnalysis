@@ -1,0 +1,8 @@
+defaults:
+  - Base
+lightning_module:
+  num_classes: 3
+  model_kwargs:  # see torchvision.models.detection.mask_rcnn.MaskRCNN
+    box_detections_per_img: 550
+data_module:
+  data_root: data/02_Interlayer_BimodalGrainSizes

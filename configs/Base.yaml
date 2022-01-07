@@ -33,3 +33,6 @@ callbacks:
     score_threshold: 0.5
     do_display_box: false
     do_display_label: false
+lightning_module:
+  model_kwargs:  # see torchvision.models.detection.mask_rcnn.MaskRCNN
+    box_detections_per_img: 400

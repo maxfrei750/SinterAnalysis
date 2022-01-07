@@ -1,7 +1,4 @@
 defaults:
   - Base
-lightning_module:
-  model_kwargs:  # see torchvision.models.detection.mask_rcnn.MaskRCNN
-    box_detections_per_img: 400
 data_module:
   data_root: data/01_Surface_MikrometerGrains

@@ -5,6 +5,7 @@ import fire
 
 from paddle.custom_types import AnyPath
 from paddle.deployment import run_model_on_dataset
+from paddle.inspection import inspect_dataset
 from paddle.lightning_modules import LightningMaskRCNN
 from paddle.utilities import (
     get_best_checkpoint_path,
@@ -19,19 +20,25 @@ def test_model_on_dataset(
     output_root: Optional[AnyPath] = "output",
     log_root: Optional[AnyPath] = "logs",
     model_id: Optional[str] = None,
+    do_visualization: bool = True,
 ):
     """Performs a default analysis of a dataset using a given model. The
         analysis includes the filtering of border instances, a visualization
         and the measurement of the area equivalent diameter, as well as the
         minimum and maximum Feret diameters.
 
-    :param config_name: Name of the config utilized for the training.
-    :param subset: Name of the subset to use.
-    :param data_root: Path of the data set folder, holding the subsets.
-    :param output_root: Root directory for output files.
-    :param log_root: Root directory for training log files.
-    :param model_id: ID of the model to use. If None, then the latest model
-        will be used.
+    Args:
+        config_name (str): Name of the config utilized for the training.
+        subset (str): Name of the subset to use.
+        data_root (Optional[AnyPath], optional): Path of the data set folder,
+            holding the subsets. Defaults to "data".
+        output_root (Optional[AnyPath], optional): Root directory for output
+            files. Defaults to "output".
+        log_root (Optional[AnyPath], optional): Root directory for training
+            log files.. Defaults to "logs".
+        model_id (Optional[str], optional): ID of the model to use. If None,
+            then the latest model will be used. Defaults to None.
+        do_visualization (bool, optional): [description]. Defaults to True.
     """
 
     data_root = Path(data_root)
@@ -50,7 +57,18 @@ def test_model_on_dataset(
         output_root,
         data_root,
         subset,
+        initial_cropping_rectangle=(0, 0, 1280, 960),
     )
+
+    if do_visualization:
+        inspect_dataset(
+            output_root,
+            subset,
+            do_display_box=False,
+            do_display_label=False,
+            do_display_score=True,
+            score_threshold=0.5,
+        )
 
 
 def get_checkpoint_path(

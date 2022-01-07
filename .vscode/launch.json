@@ -5,6 +5,30 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "analyze (surface)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/test_model_on_dataset.py",
+            "args": [
+                "Surface",
+                "validation",
+                "--data_root=${workspaceFolder}/data/01_Surface_MikrometerGrains"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "analyze (interlayer)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/test_model_on_dataset.py",
+            "args": [
+                "Interlayer",
+                "validation",
+                "--data_root=${workspaceFolder}/data/02_Interlayer_BimodalGrainSizes"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
             "name": "train (surface)",
             "type": "python",
             "request": "launch",
@@ -13,6 +37,83 @@
                 "--config-dir=${workspaceFolder}/configs",
                 "--config-name=Surface"
             ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "train (interlayer)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train_model.py",
+            "args": [
+                "--config-dir=${workspaceFolder}/configs",
+                "--config-name=Interlayer"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "train (ZnO)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train_model.py",
+            "args": [
+                "--config-dir=${workspaceFolder}/configs",
+                "--config-name=ZnO"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "train (ZnAl2O4)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/train_model.py",
+            "args": [
+                "--config-dir=${workspaceFolder}/configs",
+                "--config-name=ZnAl2O4"
+            ],
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "split (surface)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/split_dataset.py",
+            "args": [
+                "${workspaceFolder}/data/01_Surface_MikrometerGrains",
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "split (interlayer)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/split_dataset.py",
+            "args": [
+                "${workspaceFolder}/data/02_Interlayer_BimodalGrainSizes",
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "split (ZnO)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/split_dataset.py",
+            "args": [
+                "${workspaceFolder}/data/ZnO",
+            ],
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
+        },
+        {
+            "name": "split (ZnAl2O4)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/split_dataset.py",
+            "args": [
+                "${workspaceFolder}/data/ZnAl2O4",
+            ],
+            "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
         },
         {

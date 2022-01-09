@@ -14,7 +14,10 @@
                 "validation",
                 "--data_root=${workspaceFolder}/data/01_Surface_MikrometerGrains"
             ],
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "analyses",
+            }
         },
         {
             "name": "analyze (interlayer)",
@@ -26,7 +29,10 @@
                 "validation",
                 "--data_root=${workspaceFolder}/data/02_Interlayer_BimodalGrainSizes"
             ],
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "analyses",
+            }
         },
         {
             "name": "train (surface)",
@@ -37,7 +43,10 @@
                 "--config-dir=${workspaceFolder}/configs",
                 "--config-name=Surface"
             ],
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "trainings",
+            }
         },
         {
             "name": "train (interlayer)",
@@ -48,7 +57,10 @@
                 "--config-dir=${workspaceFolder}/configs",
                 "--config-name=Interlayer"
             ],
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "trainings",
+            }
         },
         {
             "name": "train (ZnO)",
@@ -59,7 +71,10 @@
                 "--config-dir=${workspaceFolder}/configs",
                 "--config-name=ZnO"
             ],
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "trainings",
+            }
         },
         {
             "name": "train (ZnAl2O4)",
@@ -70,7 +85,10 @@
                 "--config-dir=${workspaceFolder}/configs",
                 "--config-name=ZnAl2O4"
             ],
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "trainings",
+            }
         },
         {
             "name": "split (surface)",
@@ -81,7 +99,10 @@
                 "${workspaceFolder}/data/01_Surface_MikrometerGrains",
             ],
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "data_preparation",
+            }
         },
         {
             "name": "split (interlayer)",
@@ -92,7 +113,10 @@
                 "${workspaceFolder}/data/02_Interlayer_BimodalGrainSizes",
             ],
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "data_preparation",
+            }
         },
         {
             "name": "split (ZnO)",
@@ -103,7 +127,10 @@
                 "${workspaceFolder}/data/ZnO",
             ],
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "data_preparation",
+            }
         },
         {
             "name": "split (ZnAl2O4)",
@@ -114,7 +141,10 @@
                 "${workspaceFolder}/data/ZnAl2O4",
             ],
             "cwd": "${workspaceFolder}",
-            "console": "integratedTerminal"
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "data_preparation",
+            }
         },
         {
             "name": "Python: Current File",

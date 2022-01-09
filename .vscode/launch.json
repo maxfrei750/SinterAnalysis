@@ -35,6 +35,36 @@
             }
         },
         {
+            "name": "analyze (ZnO)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/test_model_on_dataset.py",
+            "args": [
+                "ZnO",
+                "validation",
+                "--data_root=${workspaceFolder}/data/ZnO"
+            ],
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "analyses",
+            }
+        },
+        {
+            "name": "analyze (ZnAl2O4)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/test_model_on_dataset.py",
+            "args": [
+                "ZnAl2O4",
+                "validation",
+                "--data_root=${workspaceFolder}/data/ZnAl2O4"
+            ],
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "analyses",
+            }
+        },
+        {
             "name": "train (surface)",
             "type": "python",
             "request": "launch",

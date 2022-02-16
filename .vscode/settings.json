@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "/home/max/miniconda3/envs/paddle/bin/python"
+    "python.pythonPath": "/home/max/miniconda3/envs/paddle/bin/python",
+    "python.formatting.provider": "black"
 }

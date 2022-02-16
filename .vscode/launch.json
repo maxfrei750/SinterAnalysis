@@ -177,6 +177,20 @@
             }
         },
         {
+            "name": "reconstruct voronoi (ZnO)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/reconstruct_voronoi_cells.py",
+            "args": [
+                "--data_root=${workspaceFolder}/output/ZnO",
+                "--subset=validation",
+            ],
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "postprocessing",
+            }
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",

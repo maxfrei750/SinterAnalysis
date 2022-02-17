@@ -4,7 +4,11 @@ from typing import Tuple
 import fire
 import matplotlib.pyplot as plt
 import numpy as np
-from skimage.measure import approximate_polygon, find_contours, subdivide_polygon
+from skimage.measure import (
+    approximate_polygon,
+    find_contours,
+    subdivide_polygon,
+)
 from skimage.morphology.convex_hull import convex_hull_image
 
 from paddle.custom_types import Annotation, AnyPath, Image
@@ -41,26 +45,38 @@ class FitPolygons(PostProcessingStepBase):
         masks = annotation["masks"]
         image = np.mean(image, axis=0)
 
-        for mask in masks:
+        plt.imshow(image, cmap="gray")
 
-            plt.imshow(image, cmap="gray")
+        for mask in masks:
 
             mask = convex_hull_image(mask)
 
             for contour in find_contours(mask, 0):
-                coords = approximate_polygon(contour, tolerance=20)
+
+                color = np.random.rand(
+                    3,
+                )
+
+                alpha = 0.5
+
+                plt.plot(
+                    contour[:, 1],
+                    contour[:, 0],
+                    ":",
+                    linewidth=1,
+                    c=np.append(color * 0.25, alpha),
+                )
+
+                coords = approximate_polygon(contour, tolerance=15)
                 plt.plot(
                     coords[:, 1],
                     coords[:, 0],
                     "-",
                     linewidth=1,
-                    c=np.random.rand(
-                        3,
-                    ),
+                    c=np.append(color, alpha),
                 )
 
         plt.show()
-        exit()
 
         return image, annotation
 

@@ -191,6 +191,20 @@
             }
         },
         {
+            "name": "reconstruct voronoi custom(ZnO)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/reconstruct_voronoi_cells_custom.py",
+            "args": [
+                "--data_root=${workspaceFolder}/output/ZnO",
+                "--subset=validation",
+            ],
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "postprocessing",
+            }
+        },
+        {
             "name": "polygonfit grains (ZnO)",
             "type": "python",
             "request": "launch",

@@ -219,6 +219,20 @@
             }
         },
         {
+            "name": "simplify grain boundaries (ZnO)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/simplify_grain_boundaries.py",
+            "args": [
+                "--data_root=${workspaceFolder}/output/ZnO",
+                "--subset=validation",
+            ],
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "postprocessing",
+            }
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",

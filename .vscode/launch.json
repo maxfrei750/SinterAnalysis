@@ -233,6 +233,20 @@
             }
         },
         {
+            "name": "measure mask properties (ZnO)",
+            "type": "python",
+            "request": "launch",
+            "program": "${workspaceFolder}/measure_mask_properties.py",
+            "args": [
+                "--data_root=${workspaceFolder}/output/ZnO",
+                "--subset=validation",
+            ],
+            "console": "integratedTerminal",
+            "presentation": {
+                "group": "postprocessing",
+            }
+        },
+        {
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",

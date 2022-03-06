@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 from typing import List, Optional, Tuple
 
@@ -125,9 +126,12 @@ class Grain:
             )
 
             edge_angle_threshold = 90
-            edge_angle = np.rad2deg(
-                np.arccos(edge_direction @ edge_direction_other)
-            )
+
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                edge_angle = np.rad2deg(
+                    np.arccos(edge_direction @ edge_direction_other)
+                )
             if edge_angle > edge_angle_threshold and edge_angle < (
                 180 - edge_angle_threshold
             ):  # degree
@@ -184,28 +188,11 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
         assert isinstance(masks, np.ndarray)
 
         image = np.mean(image, axis=0)
-        image_height, image_width = image.shape
-        image_box = box(0, 0, image_width, image_height)
-
         grains = [Grain(mask, mask_id) for mask_id, mask in enumerate(masks)]
 
         for grain_a in grains:
 
             for grain_b in grains:
-
-                # if not (grain_id_a == 31 or grain_id_b == 31):
-                #     continue
-
-                # if grain_id_b == 0:
-                #     plt.plot(
-                #         *grain_a.connection_to(grain_b).xy,
-                #         "-",
-                #         linewidth=0.5,
-                #         c="black",
-                #     )
-
-                # if grain_a is grain_b:
-                #     continue
                 if do_average_boundaries:
                     if grain_b.id <= grain_a.id:
                         continue
@@ -215,43 +202,10 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 )
 
                 if edge_cut is not None:
-                    # color_other = np.random.rand(
-                    #     3,
-                    # )
-
-                    # plt.plot(*edge_cut.xy, "-", linewidth=0.5, c=color_other)
-
-                    # if grain_id_a == 31:
-                    #     plt.annotate(
-                    #         str(grain_id_b),
-                    #         np.mean(np.array(edge_cut.xy), axis=1),
-                    #         c=color_other,
-                    #     )
-
-                    # if grain_id_b == 31:
-                    #     plt.annotate(
-                    #         str(grain_id_a),
-                    #         np.mean(np.array(edge_cut.xy), axis=1),
-                    #         c=color_other,
-                    #     )
-
-                    # edge_cut = image_box.intersection(edge_cut)
-
                     grain_a.edge_cuts.append(edge_cut)
                     grain_b.edge_cuts.append(edge_cut)
 
-        # for edge_cut in grains[12].edge_cuts:
-        #     plt.plot(
-        #         *edge_cut.xy,
-        #         "-",
-        #         linewidth=0.5,
-        #         c=color,
-        #     )
-
         for grain in grains:
-
-            # if grain.id != 31:
-            #     continue
 
             candidates = polygonize(unary_union(grain.edge_cuts))
 
@@ -274,30 +228,6 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
             else:
                 grain.boundary_simplified = None
 
-            alpha = 1
-            color = np.random.rand(
-                4,
-            )
-            color[3] = alpha
-
-            # if grain.boundary_simplified is not None:
-
-            #     plt.plot(
-            #         *grain.boundary_simplified.xy,
-            #         "-",
-            #         linewidth=0.5,
-            #         c=color,
-            #     )
-
-            a = 1
-
-            # plt.plot(
-            #     *grain_a.boundary.xy,
-            #     "-",
-            #     linewidth=1,
-            #     c=color,
-            # )
-
         do_visualization = True
 
         if do_visualization:
@@ -308,11 +238,11 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 plt.axis([0, image_width, 0, image_height])
                 plt.axis("off")
 
-            np.random.seed(42)
+            np.random.seed(41)
             num_grains = len(grains)
             colors = plt.cm.viridis(np.random.rand(num_grains))
 
-            example_grain = grains[15]
+            example_grain = grains[16]
 
             # Original boundaries.
             _plot_image(image)
@@ -320,8 +250,11 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 plt.plot(
                     *grain.boundary_original.xy, "-", linewidth=0.5, c=color
                 )
+                # plt.annotate(
+                #     str(grain.id), np.asarray(grain.center_of_mass.xy)
+                # )
 
-            plt.savefig("01boundary_original.png")
+            plt.savefig("01boundary_original.png", bbox_inches="tight")
             plt.close()
 
             # Convex hull boundaries.
@@ -329,7 +262,7 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
             for grain, color in zip(grains, colors):
                 plt.plot(*grain.boundary.xy, "-", linewidth=0.5, c=color)
 
-            plt.savefig("02boundary_convex.png")
+            plt.savefig("02boundary_convex.png", bbox_inches="tight")
             plt.close()
 
             # Connections
@@ -346,11 +279,11 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 *example_grain.center_of_mass.xy, "o", linewidth=0.5, c="red"
             )
 
-            plt.savefig("03connections.png")
+            plt.savefig("03connections.png", bbox_inches="tight")
             plt.close()
 
             # Edgecut construction
-            example_grain2 = grains[12]
+            example_grain2 = grains[13]
             _plot_image(image)
             connection = example_grain.connection_to(example_grain2)
             edgecut = example_grain.calculate_common_edge_cut(example_grain2)
@@ -361,9 +294,10 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 plt.plot(*grain.boundary.xy, "-", linewidth=0.5, c=color)
 
             plt.plot(*connection.xy, "-", linewidth=0.5, c="black", marker="o")
+            assert edgecut is not None
             plt.plot(*edgecut.xy, "-", linewidth=0.5, c="red")
 
-            plt.savefig("04edge_cut_construction.png")
+            plt.savefig("04edge_cut_construction.png", bbox_inches="tight")
             plt.close()
 
             # Edgecuts
@@ -378,27 +312,26 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 *example_grain.center_of_mass.xy, "o", linewidth=0.5, c="red"
             )
 
-            plt.savefig("05edge_cuts.png")
+            plt.savefig("05edge_cuts.png", bbox_inches="tight")
             plt.close()
 
             # Final polygons
             _plot_image(image)
-            # for grain in grains:
-            #     plt.plot(
-            #         *grain.boundary_original.xy, "-", linewidth=0.5, c="black"
-            #     )
 
             for grain, color in zip(grains, colors):
                 if grain.boundary_simplified is None:
                     continue
+
+                alpha = 0.75
+                color[3] = alpha
                 plt.plot(
                     *grain.boundary_simplified.xy,
-                    "--",
+                    "-",
                     linewidth=0.5,
                     c=color,
                 )
 
-            plt.savefig("06boundaries_simplified.png")
+            plt.savefig("06boundaries_simplified.png", bbox_inches="tight")
             plt.close()
 
             exit()

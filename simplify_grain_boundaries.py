@@ -5,19 +5,14 @@ from typing import List, Optional, Tuple
 import fire
 import matplotlib.pyplot as plt
 import numpy as np
-from shapely.geometry import LineString, Point, Polygon, box
+from shapely.geometry import LineString, Point, Polygon
 from shapely.ops import polygonize, unary_union
 from skimage.measure import find_contours
 
 from paddle.custom_types import Annotation, AnyPath, ArrayLike, Image
 from paddle.data import MaskRCNNDataset
 from paddle.postprocessing import Postprocessor
-from paddle.postprocessing.postprocessingsteps import (
-    FilterScore,
-    PostProcessingStepBase,
-)
-
-CSV_FILE_NAME = "voronoi_cells.csv"
+from paddle.postprocessing.postprocessingsteps import PostProcessingStepBase
 
 
 def normalize(vector: np.ndarray) -> np.ndarray:
@@ -26,6 +21,14 @@ def normalize(vector: np.ndarray) -> np.ndarray:
 
 def average_points(a: Point, b: Point) -> Point:
     return LineString([a, b]).interpolate(0.5, normalized=True)
+
+
+def calculate_angle_degree(direction1, direction2) -> float:
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        angle_degree = np.rad2deg(np.arccos(direction1 @ direction2))
+
+    return angle_degree
 
 
 def average_directions(
@@ -68,6 +71,44 @@ class Grain:
         self.edge_cuts: List[LineString] = []
         self.boundary_simplified: Optional[LineString] = None
         self.connections: List[LineString] = []
+
+    @property
+    def coordination_number(self) -> Optional[int]:
+        if self.dihedral_angles is None:
+            return None
+
+        return len(self.dihedral_angles)
+
+    @property
+    def dihedral_angles(self) -> Optional[List[float]]:
+        if self.boundary_simplified is None:
+            return None
+
+        segments = list(
+            map(
+                LineString,
+                zip(
+                    self.boundary_simplified.coords[:-1],
+                    self.boundary_simplified.coords[1:],
+                ),
+            )
+        )
+
+        angles: List[float] = []
+
+        def _segment_to_direction(segment):
+            return normalize(np.diff(segment.xy).squeeze())
+
+        for segment1, segment2 in zip(segments, segments[1:] + [segments[0]]):
+            direction1 = _segment_to_direction(segment1)
+            direction2 = _segment_to_direction(segment2)
+
+            angle = 180 - calculate_angle_degree(direction1, direction2)
+
+            if angle < 180:
+                angles.append(angle)
+
+        return angles
 
     def connection_to(self, other_grain: "Grain") -> LineString:
         return LineString([self.center_of_mass, other_grain.center_of_mass])
@@ -127,11 +168,9 @@ class Grain:
 
             edge_angle_threshold = 90
 
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore")
-                edge_angle = np.rad2deg(
-                    np.arccos(edge_direction @ edge_direction_other)
-                )
+            edge_angle = calculate_angle_degree(
+                edge_direction, edge_direction_other
+            )
             if edge_angle > edge_angle_threshold and edge_angle < (
                 180 - edge_angle_threshold
             ):  # degree
@@ -163,13 +202,7 @@ class Grain:
 
 
 class SimplifyGrainBoundaries(PostProcessingStepBase):
-    """Simplify the grain boundaires of an image."""
-
-    def __init__(self, output_file_path: AnyPath) -> None:
-        self.output_file_path = Path(output_file_path)
-
-        if self.output_file_path.exists():
-            raise FileExistsError(f"File already exists: {output_file_path}")
+    """Simplify the grain boundaries of an image."""
 
     def __call__(
         self, image: Image, annotation: Annotation
@@ -334,7 +367,27 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
             plt.savefig("06boundaries_simplified.png", bbox_inches="tight")
             plt.close()
 
-            exit()
+        # store data in annotation
+
+        polygons: List[Optional[np.ndarray]] = []
+        polygon_areas: List[Optional[float]] = []
+        coordination_numbers: List[Optional[int]] = []
+        dihedral_angle_lists: List[Optional[List[float]]] = []
+
+        for grain in grains:
+            coordination_numbers.append(grain.coordination_number)
+            dihedral_angle_lists.append(grain.dihedral_angles)
+            if grain.boundary_simplified is None:
+                polygons.append(None)
+                polygon_areas.append(None)
+            else:
+                polygons.append(np.asarray(grain.boundary_simplified.xy))
+                polygon_areas.append(Polygon(grain.boundary_simplified).area)
+
+        annotation["polygons"] = np.asarray(polygons)
+        annotation["polygon_areas"] = np.asarray(polygon_areas)
+        annotation["coordination_numbers"] = np.asarray(coordination_numbers)
+        annotation["dihedral_angles"] = np.asarray(dihedral_angle_lists)
 
         return image, annotation
 
@@ -348,11 +401,9 @@ def simplify_grain_boundaries(data_root: AnyPath, subset: str):
     )
 
     subset_folder_path = data_root / subset
-    measurement_csv_path = subset_folder_path / CSV_FILE_NAME
 
     post_processing_steps = [
-        FilterScore(0.8),
-        SimplifyGrainBoundaries(measurement_csv_path),
+        SimplifyGrainBoundaries(),
     ]
 
     postprocessor = Postprocessor(

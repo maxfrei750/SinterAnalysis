@@ -280,9 +280,9 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 polygon_areas.append(Polygon(grain.boundary_simplified).area)
 
         annotation["polygons"] = np.asarray(polygons)
-        annotation["polygon_areas"] = np.asarray(polygon_areas)
-        annotation["coordination_numbers"] = np.asarray(coordination_numbers)
-        annotation["dihedral_angles"] = np.asarray(dihedral_angle_lists)
+        annotation["polygon_area"] = np.asarray(polygon_areas)
+        annotation["polygon_coordination_number"] = np.asarray(coordination_numbers)
+        annotation["polygon_dihedral_angle"] = np.asarray(dihedral_angle_lists)
 
         return image, annotation
 

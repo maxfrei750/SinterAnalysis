@@ -12,7 +12,10 @@ from skimage.measure import find_contours
 from paddle.custom_types import Annotation, AnyPath, ArrayLike, Image
 from paddle.data import MaskRCNNDataset
 from paddle.postprocessing import Postprocessor
-from paddle.postprocessing.postprocessingsteps import PostProcessingStepBase
+from paddle.postprocessing.postprocessingsteps import (
+    PickleAnnotations,
+    PostProcessingStepBase,
+)
 
 
 def normalize(vector: np.ndarray) -> np.ndarray:
@@ -404,6 +407,7 @@ def simplify_grain_boundaries(data_root: AnyPath, subset: str):
 
     post_processing_steps = [
         SimplifyGrainBoundaries(),
+        PickleAnnotation(subset_folder_path, exclude_keys=["masks"]),
     ]
 
     postprocessor = Postprocessor(

@@ -5,11 +5,10 @@ import fire
 from custom_postprocessing import SimplifyGrainBoundaries
 from paddle.custom_types import AnyPath
 from paddle.data import MaskRCNNDataset
-from paddle.postprocessing import Postprocessor
-from paddle.postprocessing.postprocessingsteps import PickleAnnotation
+from paddle.postprocessing import PickleAnnotation, Postprocessor
 
 
-def simplify_grain_boundaries(data_root: AnyPath, subset: str):
+def measure_grain_properties(data_root: AnyPath, subset: str):
     data_root = Path(data_root)
 
     data_set = MaskRCNNDataset(
@@ -34,4 +33,4 @@ def simplify_grain_boundaries(data_root: AnyPath, subset: str):
 
 if __name__ == "__main__":
     data_root = "output/ZnO"
-    fire.Fire(simplify_grain_boundaries)
+    fire.Fire(measure_grain_properties)

@@ -8,7 +8,7 @@ from shapely.ops import polygonize, unary_union
 from skimage.measure import find_contours
 
 from paddle.custom_types import Annotation, ArrayLike, Image
-from paddle.postprocessing.postprocessingsteps import PostProcessingStepBase
+from paddle.postprocessing import PostProcessingStepBase
 
 
 def normalize(vector: np.ndarray) -> np.ndarray:

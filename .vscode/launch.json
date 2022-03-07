@@ -177,66 +177,10 @@
             }
         },
         {
-            "name": "reconstruct voronoi (ZnO)",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/reconstruct_voronoi_cells.py",
-            "args": [
-                "--data_root=${workspaceFolder}/output/ZnO",
-                "--subset=validation",
-            ],
-            "console": "integratedTerminal",
-            "presentation": {
-                "group": "postprocessing",
-            }
-        },
-        {
-            "name": "reconstruct voronoi custom(ZnO)",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/reconstruct_voronoi_cells_custom.py",
-            "args": [
-                "--data_root=${workspaceFolder}/output/ZnO",
-                "--subset=validation",
-            ],
-            "console": "integratedTerminal",
-            "presentation": {
-                "group": "postprocessing",
-            }
-        },
-        {
-            "name": "polygonfit grains (ZnO)",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/polygon_fit.py",
-            "args": [
-                "--data_root=${workspaceFolder}/output/ZnO",
-                "--subset=validation",
-            ],
-            "console": "integratedTerminal",
-            "presentation": {
-                "group": "postprocessing",
-            }
-        },
-        {
-            "name": "simplify grain boundaries (ZnO)",
+            "name": "measure grain properties (ZnO)",
             "type": "python",
             "request": "launch",
             "program": "${workspaceFolder}/measure_grain_properties.py",
-            "args": [
-                "--data_root=${workspaceFolder}/output/ZnO",
-                "--subset=validation",
-            ],
-            "console": "integratedTerminal",
-            "presentation": {
-                "group": "postprocessing",
-            }
-        },
-        {
-            "name": "measure mask properties (ZnO)",
-            "type": "python",
-            "request": "launch",
-            "program": "${workspaceFolder}/measure_mask_properties.py",
             "args": [
                 "--data_root=${workspaceFolder}/output/ZnO",
                 "--subset=validation",

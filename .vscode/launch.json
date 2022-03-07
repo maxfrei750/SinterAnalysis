@@ -222,7 +222,7 @@
             "name": "simplify grain boundaries (ZnO)",
             "type": "python",
             "request": "launch",
-            "program": "${workspaceFolder}/simplify_grain_boundaries.py",
+            "program": "${workspaceFolder}/measure_grain_properties.py",
             "args": [
                 "--data_root=${workspaceFolder}/output/ZnO",
                 "--subset=validation",

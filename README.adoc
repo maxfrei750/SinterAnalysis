@@ -2,13 +2,21 @@
 
 Analysis of sinter processes using Mask R-CNN.
 
-== Installation (Linux)
+== Installation
+=== Linux
     git clone --recurse-submodules git@github.com:maxfrei750/SinterAnalysis.git
     cd SinterAnalysis
-    conda env create -f paddle/environment.yaml
+    conda env create -f environment.yaml
 
-== Installation (Windows)
+=== Windows
     git clone --recurse-submodules git@github.com:maxfrei750/SinterAnalysis.git
     cd SinterAnalysis
     mklink /D paddle external\paddle\paddle
-    conda env create -f external\paddle\environment.yaml
+    conda env create -f environment.yaml
+
+== Setup pre-trained networks
+1. ...
+
+== First steps
+    conda activate paddle
+    ...

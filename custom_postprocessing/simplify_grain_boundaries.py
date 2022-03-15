@@ -265,6 +265,7 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
 
         # store data in annotation
         polygons: List[Optional[np.ndarray]] = []
+        mask_polygons: List[Optional[np.ndarray]] = []
         polygon_areas: List[Optional[float]] = []
         coordination_numbers: List[Optional[int]] = []
         dihedral_angle_lists: List[Optional[List[float]]] = []
@@ -272,6 +273,7 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
         for grain in grains:
             coordination_numbers.append(grain.coordination_number)
             dihedral_angle_lists.append(grain.dihedral_angles)
+            mask_polygons.append(np.asarray(grain.boundary_original.xy))
             if grain.boundary_simplified is None:
                 polygons.append(None)
                 polygon_areas.append(None)
@@ -280,6 +282,7 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 polygon_areas.append(Polygon(grain.boundary_simplified).area)
 
         annotation["polygons"] = np.asarray(polygons, dtype=object)
+        annotation["mask_polygons"] = np.asarray(mask_polygons, dtype=object)
         annotation["polygon_area"] = np.asarray(polygon_areas, dtype=object)
         annotation["polygon_coordination_number"] = np.asarray(
             coordination_numbers, dtype=object

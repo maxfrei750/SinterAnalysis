@@ -63,5 +63,4 @@ def measure_grain_properties(data_root: AnyPath, subset: str):
 
 
 if __name__ == "__main__":
-    data_root = "output/ZnO"
     fire.Fire(measure_grain_properties)

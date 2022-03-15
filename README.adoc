@@ -3,20 +3,35 @@
 Analysis of sinter processes using Mask R-CNN.
 
 == Installation
+=== Preparation (all operating systems)
+. Install https://conda.io/en/latest/miniconda.html[conda] for your operating system.
+. Open a command line.
+. Clone this repository and the required submodules: `git clone --recurse-submodules git@github.com:maxfrei750/SinterAnalysis.git`
+. Change into the directory of the cloned repository: `cd SinterAnalysis`
+
 === Linux
-    git clone --recurse-submodules git@github.com:maxfrei750/SinterAnalysis.git
-    cd SinterAnalysis
-    conda env create -f environment.yaml
+. Create the required conda environment: `conda env create -f environment.yaml`
 
 === Windows
-    git clone --recurse-submodules git@github.com:maxfrei750/SinterAnalysis.git
-    cd SinterAnalysis
-    mklink /D paddle external\paddle\paddle
-    conda env create -f environment.yaml
+. Create a symbolic link to the paddle module: `mklink /D paddle external\paddle\paddle`
+. Create the required conda environment: `conda env create -f environment.yaml`
 
-== Setup pre-trained networks
-1. ...
+== Training
+. Download the https://github.com/maxfrei750/SinterAnalysis/releases/download/v0.1/datasets.zip[`datasets.zip`] file and extract it at the project root.
+. Activate the conda environment: `conda activate paddle`
+. Run the training: `python train_model.py --config-dir=configs --config-name=ZnO` (alternatively: replace `ZnO` with `ZnAl2O4`)
+. The results of the inference can be found in the `logs/ZnO` folder.
 
-== First steps
-    conda activate paddle
-    ...
+== Inference
+. Download the https://github.com/maxfrei750/SinterAnalysis/releases/download/v0.1/datasets.zip[`datasets.zip`] file and extract it at the project root.
+. Either complete the training (see above) or download the https://github.com/maxfrei750/SinterAnalysis/releases/download/v0.1/models.zip[`models.zip`] file and extract it at the project root.
+. Activate the conda environment: `conda activate paddle`
+. Run the model on a dataset: `python test_model_on_dataset.py --config_name=ZnO --subset=validation --data_root=data/ZnO` (alternatively: replace `ZnO` with `ZnAl2O4`)
+. The results of the inference can be found in the `output/ZnO` folder.
+
+
+== Post-processing
+. Complete the inference (see above).
+. Activate the conda environment: `conda activate paddle`
+. Post-process the results of the inference: `python measure_grain_properties.py --data_root=output/ZnO --subset=validation` (alternatively: replace `ZnO` with `ZnAl2O4`)
+. The results of the post-processing are stored in `.pkl`-files (see https://wiki.python.org/moin/UsingPickle[pickle]) in the `output/ZnO` folder.

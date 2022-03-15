@@ -87,3 +87,4 @@ build
 /output
 /wandb
 /studies/**/results*
+/release

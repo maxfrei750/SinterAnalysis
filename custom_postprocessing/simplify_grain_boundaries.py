@@ -162,16 +162,6 @@ class Grain:
                 intersection_point_other
             )
 
-            edge_angle_threshold = 90
-
-            edge_angle = calculate_angle_degree(
-                edge_direction, edge_direction_other
-            )
-            if edge_angle > edge_angle_threshold and edge_angle < (
-                180 - edge_angle_threshold
-            ):  # degree
-                return None
-
             direction = average_directions(
                 edge_direction, edge_direction_other
             )

@@ -1,5 +1,5 @@
 import warnings
-from typing import List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,7 +7,7 @@ from shapely.geometry import LineString, Point, Polygon
 from shapely.ops import polygonize, unary_union
 from skimage.measure import find_contours
 
-from paddle.custom_types import Annotation, ArrayLike, Image
+from paddle.custom_types import ArrayLike, Image
 from paddle.postprocessing import PostProcessingStepBase
 
 
@@ -191,8 +191,8 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
     """Simplify the grain boundaries of an image."""
 
     def __call__(
-        self, image: Image, annotation: Annotation
-    ) -> Tuple[Image, Annotation]:
+        self, image: Image, annotation: Dict[str, Any]
+    ) -> Tuple[Image, Dict[str, Any]]:
         """Restore Voronoi cells based on a set of masks.
 
         :param image: input image
@@ -271,15 +271,11 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 polygons.append(np.asarray(grain.boundary_simplified.xy))
                 polygon_areas.append(Polygon(grain.boundary_simplified).area)
 
-        annotation["polygons"] = np.asarray(polygons, dtype=object)
-        annotation["mask_polygons"] = np.asarray(mask_polygons, dtype=object)
-        annotation["polygon_area"] = np.asarray(polygon_areas, dtype=object)
-        annotation["polygon_coordination_number"] = np.asarray(
-            coordination_numbers, dtype=object
-        )
-        annotation["polygon_dihedral_angle"] = np.asarray(
-            dihedral_angle_lists, dtype=object
-        )
+        annotation["polygons"] = polygons
+        annotation["mask_polygons"] = mask_polygons
+        annotation["polygon_area"] = polygon_areas
+        annotation["polygon_coordination_number"] = coordination_numbers
+        annotation["polygon_dihedral_angle"] = dihedral_angle_lists
 
         return image, annotation
 

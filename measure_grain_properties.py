@@ -19,7 +19,7 @@ from paddle.postprocessing import (
 )
 
 
-def measure_grain_properties(data_root: AnyPath, subset: str):
+def measure_grain_properties(data_root: AnyPath, subset: str) -> None:
     data_root = Path(data_root)
 
     data_set = MaskRCNNDataset(

@@ -1,4 +1,5 @@
 import warnings
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import matplotlib.pyplot as plt
@@ -7,7 +8,7 @@ from shapely.geometry import LineString, Point, Polygon
 from shapely.ops import polygonize, unary_union
 from skimage.measure import find_contours
 
-from paddle.custom_types import ArrayLike, Image
+from paddle.custom_types import AnyPath, ArrayLike, Image
 from paddle.postprocessing import PostProcessingStepBase
 
 
@@ -287,6 +288,11 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
             plt.gca().invert_yaxis()
             plt.axis("off")
 
+        def _save_figure(path: AnyPath):
+            path = Path(path)
+            plt.savefig(path, bbox_inches="tight", dpi=1200)
+            plt.close()
+
         np.random.seed(41)
         num_grains = len(grains)
         colors = plt.cm.viridis(np.random.rand(num_grains))
@@ -301,16 +307,14 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
             #     str(grain.id), np.asarray(grain.center_of_mass.xy)
             # )
 
-        plt.savefig("01boundary_original.png", bbox_inches="tight")
-        plt.close()
+        _save_figure("01boundary_original.pdf")
 
         # Convex hull boundaries.
         _plot_image(image)
         for grain, color in zip(grains, colors):
             plt.plot(*grain.boundary.xy, "-", linewidth=0.5, c=color)
 
-        plt.savefig("02boundary_convex.png", bbox_inches="tight")
-        plt.close()
+        _save_figure("02boundary_convex.pdf")
 
         # Connections
         _plot_image(image)
@@ -322,8 +326,7 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
 
         plt.plot(*example_grain.center_of_mass.xy, "o", linewidth=0.5, c="red")
 
-        plt.savefig("03connections.png", bbox_inches="tight")
-        plt.close()
+        _save_figure("03connections.pdf")
 
         # Edgecut construction
         example_grain2 = grains[13]
@@ -340,8 +343,7 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
         assert edgecut is not None
         plt.plot(*edgecut.xy, "-", linewidth=0.5, c="red")
 
-        plt.savefig("04edge_cut_construction.png", bbox_inches="tight")
-        plt.close()
+        _save_figure("04edge_cut_construction.pdf")
 
         # Edgecuts
         _plot_image(image)
@@ -353,8 +355,7 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
 
         plt.plot(*example_grain.center_of_mass.xy, "o", linewidth=0.5, c="red")
 
-        plt.savefig("05edge_cuts.png", bbox_inches="tight")
-        plt.close()
+        _save_figure("05edge_cuts.pdf")
 
         # Final polygons
         _plot_image(image)
@@ -372,5 +373,4 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 c=color,
             )
 
-        plt.savefig("06boundaries_simplified.png", bbox_inches="tight")
-        plt.close()
+        _save_figure("06boundaries_simplified.pdf")

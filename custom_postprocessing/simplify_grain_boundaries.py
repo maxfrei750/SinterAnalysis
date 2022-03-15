@@ -284,6 +284,7 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
             plt.imshow(image, cmap="gray")
             image_height, image_width = image.shape
             plt.axis([0, image_width, 0, image_height])
+            plt.gca().invert_yaxis()
             plt.axis("off")
 
         np.random.seed(41)

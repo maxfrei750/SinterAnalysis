@@ -21,6 +21,7 @@ def test_model_on_dataset(
     log_root: Optional[AnyPath] = "logs",
     model_id: Optional[str] = None,
     do_visualization: bool = True,
+    gpus: Optional[int] = -1,
 ):
     """Performs a default analysis of a dataset using a given model. The
         analysis includes the filtering of border instances, a visualization
@@ -39,6 +40,7 @@ def test_model_on_dataset(
         model_id (Optional[str], optional): ID of the model to use. If None,
             then the latest model will be used. Defaults to None.
         do_visualization (bool, optional): [description]. Defaults to True.
+        gpus (int, optional): Specify, which compute device to use (see https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#select-gpu-devices).
     """
 
     data_root = Path(data_root)
@@ -58,6 +60,7 @@ def test_model_on_dataset(
         data_root,
         subset,
         initial_cropping_rectangle=(0, 0, 1280, 960),
+        gpus=gpus,
     )
 
     if do_visualization:

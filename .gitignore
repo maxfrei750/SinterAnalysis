@@ -88,3 +88,4 @@ build
 /wandb
 /studies/**/results*
 /release
+/paddle

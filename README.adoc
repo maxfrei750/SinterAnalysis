@@ -10,10 +10,11 @@ Analysis of sinter processes using Mask R-CNN.
 . Change into the directory of the cloned repository: `cd SinterAnalysis`
 
 === Linux
+. Create a symbolic link to the paddle module: `ln -s external/paddle/paddle paddle`
 . Create the required conda environment: `conda env create -f environment.yaml`
 
 === Windows
-. Create a symbolic link to the paddle module: `mklink /D paddle external\paddle\paddle`
+. Create a symbolic link to the paddle module (this can require admin rights): `mklink /D paddle external\paddle\paddle`
 . Create the required conda environment: `conda env create -f environment.yaml`
 
 == Training

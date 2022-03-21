@@ -137,7 +137,7 @@ class Grain:
             connection
         )
 
-        if intersection_point.is_empty or intersection_point_other.is_empty:
+        if intersection_point_other.is_empty:
             return None
 
         support_vector = average_points(

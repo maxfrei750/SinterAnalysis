@@ -27,7 +27,7 @@ Analysis of sinter processes using Mask R-CNN.
 . Download the https://github.com/maxfrei750/SinterAnalysis/releases/download/v0.1/datasets.zip[`datasets.zip`] file and extract it at the project root.
 . Either complete the training (see above) or download the https://github.com/maxfrei750/SinterAnalysis/releases/download/v0.1/models.zip[`models.zip`] file and extract it at the project root.
 . Activate the conda environment: `conda activate paddle`
-. Run the model on a dataset: `python test_model_on_dataset.py --config_name=ZnO --subset=validation --data_root=data/ZnO` (alternatively: replace `ZnO` with `ZnAl2O4`)
+. Run the model on a dataset: `python test_model_on_dataset.py --config_name=ZnO --data_root=data/ZnO --subset=validation ` (alternatively: replace `ZnO` with `ZnAl2O4`)
 . The results of the inference can be found in the `output/ZnO` folder.
 
 

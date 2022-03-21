@@ -144,17 +144,6 @@ class Grain:
             ):
                 return None
 
-            intersection_point_distance_threshold = 1
-
-            intersection_point_distance = intersection_point.distance(
-                intersection_point_other
-            )
-
-            if (
-                intersection_point_distance / connection.length
-            ) > intersection_point_distance_threshold:
-                return None
-
             support_vector = average_points(
                 intersection_point, intersection_point_other
             )

@@ -184,6 +184,7 @@
             "args": [
                 "--data_root=${workspaceFolder}/output/ZnO",
                 "--subset=validation",
+                "--minimum_overlap_percentage_threshold=-0.5"
             ],
             "console": "integratedTerminal",
             "presentation": {

@@ -1,4 +1,5 @@
 import warnings
+from dataclasses import dataclass
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -120,7 +121,9 @@ class Grain:
         raise RuntimeError("Could not determine edge direction.")
 
     def calculate_common_edge_cut(
-        self, other_grain: "Grain"
+        self,
+        other_grain: "Grain",
+        minimum_overlap_percentage_threshold: Optional[float] = None,
     ) -> Optional[LineString]:
 
         connection = self.connection_to(other_grain)
@@ -139,6 +142,17 @@ class Grain:
 
         if intersection_point_other.is_empty:
             return None
+
+        if minimum_overlap_percentage_threshold is not None:
+            radius = intersection_point.distance(self.center_of_mass)
+            radius_other = intersection_point_other.distance(
+                other_grain.center_of_mass
+            )
+            overlap = radius + radius_other - connection.length
+            overlap_percentage = overlap / connection.length
+
+            if overlap_percentage <= minimum_overlap_percentage_threshold:
+                return None
 
         support_vector = average_points(
             intersection_point, intersection_point_other
@@ -167,8 +181,19 @@ class Grain:
         return LineString([p1, p2])
 
 
+@dataclass
 class SimplifyGrainBoundaries(PostProcessingStepBase):
-    """Simplify the grain boundaries of an image."""
+    """Simplify the grain boundaries of an image.
+
+    Args:
+        minimum_overlap_percentage_threshold (Optional[float], optional): Threshold to
+            skip grains during the grain boundary simplification, which are probably no
+            nearest neighbors. The overlap percentage is calculated as the sum of grain
+            radii minus divided by the connection length, minus 1. If None, no grains
+            are skipped. Defaults to None.
+    """
+
+    minimum_overlap_percentage_threshold: Optional[float] = None
 
     def __call__(
         self, image: Image, annotation: Dict[str, Any]
@@ -195,7 +220,10 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
                 if grain_b.id <= grain_a.id:
                     continue
 
-                edge_cut = grain_a.calculate_common_edge_cut(grain_b)
+                edge_cut = grain_a.calculate_common_edge_cut(
+                    grain_b,
+                    minimum_overlap_percentage_threshold=self.minimum_overlap_percentage_threshold,
+                )
 
                 if edge_cut is not None:
                     grain_a.edge_cuts.append(edge_cut)

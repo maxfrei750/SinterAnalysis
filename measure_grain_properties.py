@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 import fire
 
@@ -19,7 +20,22 @@ from paddle.postprocessing import (
 )
 
 
-def measure_grain_properties(data_root: AnyPath, subset: str) -> None:
+def measure_grain_properties(
+    data_root: AnyPath,
+    subset: str,
+    minimum_overlap_percentage_threshold: Optional[float] = None,
+) -> None:
+    """Measure various properties of grains.
+
+    Args:
+        data_root (AnyPath): Root path of the dataset to be analyzed.
+        subset (str): Subset (folder in data_root) to be analyzed.
+        minimum_overlap_percentage_threshold (Optional[float], optional): Threshold to
+            skip grains during the grain boundary simplification, which are probably no
+            nearest neighbors. The overlap percentage is calculated as the sum of grain
+            radii minus divided by the connection length, minus 1. If None, no grains
+            are skipped. Defaults to None.
+    """
     data_root = Path(data_root)
 
     data_set = MaskRCNNDataset(
@@ -41,7 +57,9 @@ def measure_grain_properties(data_root: AnyPath, subset: str) -> None:
 
     post_processing_steps = [
         MeasureMaskProperties(measurement_fcns=measurement_fcns),
-        SimplifyGrainBoundaries(),
+        SimplifyGrainBoundaries(
+            minimum_overlap_percentage_threshold=minimum_overlap_percentage_threshold
+        ),
         PickleAnnotation(
             subset_folder_path,
             exclude_keys=[

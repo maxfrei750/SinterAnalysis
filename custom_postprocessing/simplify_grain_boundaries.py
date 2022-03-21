@@ -120,7 +120,7 @@ class Grain:
         raise RuntimeError("Could not determine edge direction.")
 
     def calculate_common_edge_cut(
-        self, other_grain: "Grain", do_average_edge: bool = True
+        self, other_grain: "Grain"
     ) -> Optional[LineString]:
 
         connection = self.connection_to(other_grain)
@@ -133,32 +133,22 @@ class Grain:
         if intersection_point.is_empty:
             return None
 
-        if do_average_edge:
-            intersection_point_other = other_grain.boundary.intersection(
-                connection
-            )
+        intersection_point_other = other_grain.boundary.intersection(
+            connection
+        )
 
-            if (
-                intersection_point.is_empty
-                or intersection_point_other.is_empty
-            ):
-                return None
+        if intersection_point.is_empty or intersection_point_other.is_empty:
+            return None
 
-            support_vector = average_points(
-                intersection_point, intersection_point_other
-            )
+        support_vector = average_points(
+            intersection_point, intersection_point_other
+        )
 
-            edge_direction_other = other_grain.calculate_edge_direction(
-                intersection_point_other
-            )
+        edge_direction_other = other_grain.calculate_edge_direction(
+            intersection_point_other
+        )
 
-            direction = average_directions(
-                edge_direction, edge_direction_other
-            )
-
-        else:
-            support_vector = intersection_point
-            direction = edge_direction
+        direction = average_directions(edge_direction, edge_direction_other)
 
         return self.calculate_edge(support_vector, direction)
 
@@ -190,7 +180,6 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
             bounding boxes, etc.)
         :return: image and annotation, both identical to the inputs
         """
-        do_average_boundaries = True
 
         masks = annotation["masks"]
 
@@ -202,13 +191,11 @@ class SimplifyGrainBoundaries(PostProcessingStepBase):
         for grain_a in grains:
 
             for grain_b in grains:
-                if do_average_boundaries:
-                    if grain_b.id <= grain_a.id:
-                        continue
 
-                edge_cut = grain_a.calculate_common_edge_cut(
-                    grain_b, do_average_edge=do_average_boundaries
-                )
+                if grain_b.id <= grain_a.id:
+                    continue
+
+                edge_cut = grain_a.calculate_common_edge_cut(grain_b)
 
                 if edge_cut is not None:
                     grain_a.edge_cuts.append(edge_cut)

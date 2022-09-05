@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
 import fire
 
@@ -7,10 +7,7 @@ from paddle.custom_types import AnyPath
 from paddle.deployment import run_model_on_dataset
 from paddle.inspection import inspect_dataset
 from paddle.lightning_modules import LightningMaskRCNN
-from paddle.utilities import (
-    get_best_checkpoint_path,
-    get_latest_log_folder_path,
-)
+from paddle.utilities import get_best_checkpoint_path, get_latest_log_folder_path
 
 
 def test_model_on_dataset(
@@ -22,6 +19,7 @@ def test_model_on_dataset(
     model_id: Optional[str] = None,
     do_visualization: bool = True,
     gpus: Optional[int] = -1,
+    initial_cropping_rectangle: Optional[Tuple[int, int, int, int]] = (0, 0, 1280, 960)
 ):
     """Performs a default analysis of a dataset using a given model. The
         analysis includes the filtering of border instances, a visualization
@@ -41,6 +39,8 @@ def test_model_on_dataset(
             then the latest model will be used. Defaults to None.
         do_visualization (bool, optional): [description]. Defaults to True.
         gpus (int, optional): Specify, which compute device to use (see https://pytorch-lightning.readthedocs.io/en/stable/advanced/multi_gpu.html#select-gpu-devices).
+        initial_cropping_rectangle: If not None, [x_min, y_min, x_max, y_max] rectangle used for
+        the cropping of images.
     """
 
     data_root = Path(data_root)
@@ -59,7 +59,7 @@ def test_model_on_dataset(
         output_root,
         data_root,
         subset,
-        initial_cropping_rectangle=(0, 0, 1280, 960),
+        initial_cropping_rectangle=initial_cropping_rectangle,
         gpus=gpus,
     )
 

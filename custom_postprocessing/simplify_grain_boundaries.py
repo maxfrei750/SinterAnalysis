@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from shapely.geometry import LineString, Point, Polygon
 from shapely.ops import polygonize, unary_union
+from shapely.validation import make_valid
 from skimage.measure import find_contours
 
 from paddle.custom_types import AnyPath, ArrayLike, Image
@@ -49,6 +50,9 @@ class Grain:
         )
 
         self.boundary_original = self.polygon_original.exterior
+
+        # This helps with exotic masks, which elsewise would crash the reconstruction.
+        self.polygon_original = make_valid(self.polygon_original)
 
         self.boundary = self.boundary_original.convex_hull.exterior
 

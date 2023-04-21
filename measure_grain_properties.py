@@ -1,3 +1,4 @@
+import warnings
 from pathlib import Path
 from typing import Optional
 
@@ -23,6 +24,7 @@ from paddle.postprocessing import (
 def measure_grain_properties(
     data_root: AnyPath,
     subset: str,
+    do_simplify_grain_boundaries: bool = True,
     minimum_overlap_percentage_threshold: Optional[float] = None,
 ) -> None:
     """Measure various properties of grains.
@@ -30,12 +32,21 @@ def measure_grain_properties(
     Args:
         data_root (AnyPath): Root path of the dataset to be analyzed.
         subset (str): Subset (folder in data_root) to be analyzed.
+        do_simplify_grain_boundaries (bool, optional): Whether to simplify grain
+            boundaries. Defaults to True.
         minimum_overlap_percentage_threshold (Optional[float], optional): Threshold to
             skip grains during the grain boundary simplification, which are probably no
             nearest neighbors. The overlap percentage is calculated as the sum of grain
             radii minus divided by the connection length, minus 1. If None, no grains
             are skipped. Defaults to None.
     """
+
+    if (not do_simplify_grain_boundaries
+        and minimum_overlap_percentage_threshold is not None):
+        warnings.warn("`minimum_overlap_percentage_threshold` is set, but"
+                      " `do_simplify_grain_boundaries` is False. The threshold will"
+                      " have no effect.")
+
     data_root = Path(data_root)
 
     data_set = MaskRCNNDataset(
@@ -56,10 +67,15 @@ def measure_grain_properties(
     }
 
     post_processing_steps = [
-        MeasureMaskProperties(measurement_fcns=measurement_fcns),
+        MeasureMaskProperties(measurement_fcns=measurement_fcns)]
+
+    if do_simplify_grain_boundaries:
+        post_processing_steps += [
         SimplifyGrainBoundaries(
             minimum_overlap_percentage_threshold=minimum_overlap_percentage_threshold
-        ),
+        )]
+
+    post_processing_steps += [
         PickleAnnotation(
             subset_folder_path,
             exclude_keys=[
@@ -75,7 +91,7 @@ def measure_grain_properties(
     postprocessor = Postprocessor(
         data_set,
         post_processing_steps,
-        progress_bar_description="Simplifying grain boundaries",
+        progress_bar_description="Measuring grain properties",
     )
     postprocessor.run()
 

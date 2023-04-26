@@ -20,7 +20,7 @@ class MeasuredParticleSizeDistribution:
         self.random_number_generator = np.random.RandomState(self.random_seed)
         self.measurements_biased = [
             self.random_number_generator.normal(
-                loc=m, scale=m * self.measurement_standard_deviation
+                loc=m, scale=self.measurement_standard_deviation
             )
             for m in self.measurements_true
         ]
@@ -75,33 +75,44 @@ class TrueParticleSizeDistribution:
 
 
 def plot_psd_comparison(
-    TrueParticleSizeDistribution,
-    geometric_mean_diameter,
-    geometric_standard_deviation,
+    geometric_mean_diameter_true,
+    geometric_standard_deviation_true,
     num_samples,
-    measurement_errors,
+    measurement_standard_deviations_percent,
 ):
     psd_true = TrueParticleSizeDistribution(
-        geometric_mean_diameter=geometric_mean_diameter,
-        geometric_standard_deviation=geometric_standard_deviation,
+        geometric_mean_diameter=geometric_mean_diameter_true,
+        geometric_standard_deviation=geometric_standard_deviation_true,
     )
     psd_true.plot(
         marker="",
-        label=rf"True PSD ($d_g={geometric_mean_diameter}$, $\sigma_g={geometric_standard_deviation}$)",
+        label=rf"True PSD ($d_g={geometric_mean_diameter_true}$ px,"
+        + rf" $\sigma_g={geometric_standard_deviation_true}$)",
         color="gray",
         linestyle="--",
     )
 
-    colors = list(sns.color_palette("viridis", n_colors=len(measurement_errors)))  # type: ignore
+    num_simulations = len(measurement_standard_deviations_percent)
+    colors = list(sns.color_palette("viridis", n_colors=num_simulations))  # type: ignore
 
-    for measurement_error, color in zip(measurement_errors, colors):
+    for measurement_standard_deviation_percent, color in zip(
+        measurement_standard_deviations_percent, colors
+    ):
+        measurement_standard_deviation = (
+            measurement_standard_deviation_percent
+            * geometric_mean_diameter_true
+        )
+
         psd_measured = psd_true.measure(
             num_samples=num_samples,
-            measurement_standard_deviation=measurement_error,
+            measurement_standard_deviation=measurement_standard_deviation,
         )
 
         error_geometric_mean_diameter_percent = (
-            (psd_measured.geometric_mean_diameter - geometric_mean_diameter)
+            (
+                psd_measured.geometric_mean_diameter
+                - geometric_mean_diameter_true
+            )
             / psd_true.geometric_mean_diameter
             * 100
         )
@@ -110,39 +121,44 @@ def plot_psd_comparison(
                 psd_measured.geometric_standard_deviation
                 - psd_true.geometric_standard_deviation
             )
-            / geometric_standard_deviation
+            / geometric_standard_deviation_true
             * 100
         )
 
         psd_measured.plot(
             marker="",
-            label=rf"Simulated Measurement ($N={num_samples}$, $s={measurement_error*100:.0f}\%$)"
+            label=rf"Simulated Measurement ($N={num_samples}$,"
+            + rf" $s={measurement_standard_deviation:.0f}$ px)"
             + "\n"
-            + rf"    $\Delta d_g={error_geometric_mean_diameter_percent:.0f}\%$, $\Delta\sigma_g={error_geometric_standard_deviation_percent:.0f}\%$",
+            + rf"    $\Delta d_g={error_geometric_mean_diameter_percent:.0f}\%$,"
+            + rf" $\Delta\sigma_g={error_geometric_standard_deviation_percent:.0f}\%$",
             color=color,
         )
     plt.xlabel("Particle Diameter")
     plt.legend()
-    plt.xlim(left=0, right=150)
+    plt.xlim(
+        left=0,
+        right=psd_true.geometric_mean_diameter
+        * psd_true.geometric_standard_deviation
+        * 4,
+    )
 
 
 if __name__ == "__main__":
     np.random.seed(0)
-    geometric_mean_diameter = 20
-    geometric_standard_deviation = 1.5
-    measurement_errors = np.arange(0, 0.4, 0.1)
+    geometric_mean_diameter_true = 100
+    geometric_standard_deviation_true = 1.3
+    measurement_standard_deviation = [0, 0.02, 0.04, 0.08]
 
-    nums_samples = [1000, 10000, 100000]
-
+    nums_samples = [1000, 1000000]
 
     for num_samples in nums_samples:
         fig = plt.figure(figsize=(6, 4))
         plot_psd_comparison(
-            TrueParticleSizeDistribution,
-            geometric_mean_diameter,
-            geometric_standard_deviation,
+            geometric_mean_diameter_true,
+            geometric_standard_deviation_true,
             num_samples,
-            measurement_errors,
+            measurement_standard_deviation,
         )
         plt.savefig(SCRIPT_DIR / f"psd_simulation_{num_samples}.pdf")
         plt.close()

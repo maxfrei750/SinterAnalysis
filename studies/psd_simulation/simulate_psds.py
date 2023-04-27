@@ -79,6 +79,7 @@ def plot_psd_comparison(
     geometric_standard_deviation_true,
     num_samples,
     measurement_standard_deviations_percent,
+    random_seed=0,
 ):
     psd_true = TrueParticleSizeDistribution(
         geometric_mean_diameter=geometric_mean_diameter_true,
@@ -106,6 +107,7 @@ def plot_psd_comparison(
         psd_measured = psd_true.measure(
             num_samples=num_samples,
             measurement_standard_deviation=measurement_standard_deviation,
+            random_seed=random_seed,
         )
 
         error_geometric_mean_diameter_percent = (
@@ -145,7 +147,7 @@ def plot_psd_comparison(
 
 
 if __name__ == "__main__":
-    np.random.seed(0)
+    random_seed = 1
     geometric_mean_diameter_true = 100
     geometric_standard_deviation_true = 1.3
     measurement_standard_deviation = [0, 0.02, 0.04, 0.08]
@@ -159,6 +161,7 @@ if __name__ == "__main__":
             geometric_standard_deviation_true,
             num_samples,
             measurement_standard_deviation,
+            random_seed=random_seed,
         )
         plt.savefig(SCRIPT_DIR / f"psd_simulation_{num_samples}.pdf")
         plt.close()

@@ -164,5 +164,8 @@ if __name__ == "__main__":
             measurement_standard_deviation,
             random_seed=random_seed,
         )
-        plt.savefig(SCRIPT_DIR / f"psd_simulation_{num_samples}.pdf")
+
+        output_path = SCRIPT_DIR / f"psd_simulation_{num_samples}.pdf"
+        plt.savefig(output_path)
+        plt.savefig(output_path.with_suffix(".png"), dpi=300)
         plt.close()

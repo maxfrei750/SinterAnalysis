@@ -136,7 +136,8 @@ def plot_psd_comparison(
             + rf" $\Delta\sigma_g={error_geometric_standard_deviation_percent:.0f}\%$",
             color=color,
         )
-    plt.xlabel("Particle Diameter")
+    plt.xlabel("Particle Diameter [px]")
+    plt.ylabel("Probability Density [1/px]")
     plt.legend()
     plt.xlim(
         left=0,

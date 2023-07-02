@@ -1,4 +1,12 @@
 {
     "python.pythonPath": "/home/max/miniconda3/envs/paddle/bin/python",
-    "python.formatting.provider": "black"
+    "python.formatting.provider": "black",
+    "cSpell.customDictionaries": {
+        "custom-dictionary-workspace": {
+            "name": "custom-dictionary-workspace",
+            "path": "${workspaceFolder:SinterAnalysis}/.cspell/custom-dictionary-workspace.txt",
+            "addWords": true,
+            "scope": "workspace"
+        }
+    }
 }

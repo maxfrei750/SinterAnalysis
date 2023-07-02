@@ -1,0 +1,17 @@
+# Custom Dictionary Words
+arange
+gmean
+gstd
+linestyle
+mstats
+savefig
+xlim
+kdeplot
+lognorm
+logspace
+matplotlib
+psds
+pyplot
+scipy
+seaborn
+trap

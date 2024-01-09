@@ -36,3 +36,18 @@ Analysis of sinter processes using Mask R-CNN.
 . Activate the conda environment: `conda activate paddle`
 . Post-process the results of the inference: `python measure_grain_properties.py --data_root=output/ZnO --subset=validation` (alternatively: replace `ZnO` with `ZnAl2O4`)
 . The results of the post-processing are stored in `.pkl`-files (see https://wiki.python.org/moin/UsingPickle[pickle]) in the `output/ZnO` folder.
+
+## Citation
+If you use this repository for a publication, then please cite it using the following bibtex-entry:
+```
+@article{Gorynski.2023,
+	title = {Machine Learning Based Quantitative Characterization of Microstructures},
+	author = {Gorynski, Claudia and Frei, Max and Kruis, Frank Einar and Winterer, Markus},
+	year = {2023},
+	journal = {Acta Materialia},
+	volume = {256},
+	pages = {119106},
+	issn = {1359-6454},
+	doi = {10.1016/j.actamat.2023.119106},
+}
+```
